@@ -27,10 +27,10 @@ int main(){
     
     serv_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
     serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = 4399;
+    serv_addr.sin_port = htons(4399);
 
-    // 为套接字指定IP和端口
-    bind(sock_fd, (sockaddr*)&serv_addr, sizeof serv_addr);
+    // 客户端不需要bind操作
+    // bind(sock_fd, (sockaddr*)&serv_addr, sizeof serv_addr);
 
     int clnt_fd = connect(sock_fd, (sockaddr*)&serv_addr, sizeof serv_addr);
 
@@ -38,6 +38,8 @@ int main(){
 
     std::cin >> buffer;
 
+    // 向服务器端打印一个字符串
+    // 再从服务器端读取一个字符串
     write(sock_fd, buffer, sizeof buffer);
 
     read(sock_fd, buffer, sizeof buffer);

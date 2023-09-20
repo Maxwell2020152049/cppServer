@@ -28,7 +28,7 @@ int main(){
     
     serv_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
     serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = 4399;
+    serv_addr.sin_port = htons(4399);
 
     // 为套接字指定IP和端口
     bind(sock_fd, (sockaddr*)&serv_addr, sizeof serv_addr);
@@ -39,15 +39,19 @@ int main(){
     sockaddr_in clnt_addr;
     memset(&clnt_addr, 0, sizeof clnt_addr);
 
+    //  等待客户端连接
     socklen_t clnt_addr_len = sizeof clnt_addr;
     int clnt_fd = accept(sock_fd, (sockaddr* )&clnt_addr, &clnt_addr_len);
 
+    // 打印连接服务器的客户端的信息
     std::cout << "client's address is " << inet_ntoa(clnt_addr.sin_addr) << ", " << 
         "client's IP protocol is " << clnt_addr.sin_family << ", " << 
         "client's Port is " << clnt_addr.sin_port << std::endl;
 
     char buffer[N];
 
+    // 从客户端接收一个字符串
+    // 再向客户端打印一个字符串
     read(clnt_fd, buffer, sizeof buffer);
 
     std::cout << "accpet message from client: " << buffer << std::endl;
