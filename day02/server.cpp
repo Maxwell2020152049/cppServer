@@ -4,6 +4,7 @@
 #include <arpa/inet.h>  // 这个头文件包含了<inet/in.h>，可以使用IPPROTO_TCP相关的宏
 #include <cstring>
 #include <unistd.h>
+#include <sys/epoll.h>
 #include "err.h"
 
 const int BUF_SIZE = 1024;
@@ -19,7 +20,7 @@ int main(){
 
     handle_error(sock_fd == -1, "创建socket失败");
 
-    sockaddr_in serv_addr;
+    struct sockaddr_in serv_addr;
 
     // 设置套接字IP，协议，端口
     memset(&serv_addr, 0, sizeof serv_addr);
@@ -34,13 +35,13 @@ int main(){
     // 创建监听队列
     handle_error(listen(sock_fd, SOMAXCONN) == -1, "listen失败");
 
-    sockaddr_in clnt_addr;
+    struct sockaddr_in clnt_addr;
     memset(&clnt_addr, 0, sizeof clnt_addr);
 
     //  等待客户端连接
     socklen_t clnt_addr_len = sizeof clnt_addr;
     int clnt_fd = accept(sock_fd, (sockaddr* )&clnt_addr, &clnt_addr_len);
-    handle_error(sock_fd == -1, "accept 失败");
+    handle_error(sock_fd == -1, "accept失败");
 
     // 打印连接服务器的客户端的信息
     std::cout << "client's address is " << inet_ntoa(clnt_addr.sin_addr) << ", " << 
@@ -65,6 +66,9 @@ int main(){
 
         handle_error(write(clnt_fd, buffer, sizeof buffer) == -1, "write失败");
     }
+
+    handle_error(close(sock_fd) == -1, "关闭socket失败");
+    handle_error(close(clnt_fd) == -1, "关闭socket失败");
 
     return 0;
 }

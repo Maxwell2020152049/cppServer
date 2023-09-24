@@ -45,14 +45,14 @@ int main(){
         // 再从服务器端读取一个字符串
         handle_error(write(sock_fd, buffer, sizeof buffer) == -1, "write失败");
 
-        handle_error(read(sock_fd, buffer, sizeof buffer) == -1, "read失败");
-
         if (!strcmp(buffer, "q") || !strcmp(buffer, "Q")){
-            std::cout << "server disconnected" << std::endl;
+            std::cout << "服务器断开连接" << std::endl;
             break;
         }
 
-        std::cout << "accpet message from server: " << buffer << std::endl;
+        handle_error(read(sock_fd, buffer, sizeof buffer) == -1, "read失败");
+
+        std::cout << "接收来自服务器的消息: " << buffer << std::endl;
     }
 
     handle_error(close(sock_fd) == -1, "关闭socket失败");
